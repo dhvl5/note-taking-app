@@ -1,0 +1,2 @@
+rootProject.name='WASD'
+include ':app'
