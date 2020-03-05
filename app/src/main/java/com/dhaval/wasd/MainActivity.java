@@ -29,15 +29,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-enum FloatingButtonState
-{
-    ADD_STATE, SAVE_STATE
-};
-
 public class MainActivity extends AppCompatActivity
 {
-    FloatingButtonState floatingButtonState;
-
     EditText editText;
     FloatingActionButton floatingActionButton;
 
@@ -74,37 +67,32 @@ public class MainActivity extends AppCompatActivity
         bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
         bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
 
-        editText = findViewById(R.id.note_edt_txt);
+        editText = findViewById(R.id.titleNoteEditText);
         floatingActionButton = findViewById(R.id.floating_btn);
 
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(noteAdapter);
 
-        floatingButtonState = FloatingButtonState.ADD_STATE;
         floatingActionButton.setVisibility(View.VISIBLE);
+        floatingActionButton.setImageResource(R.drawable.ic_add_black);
 
-        if(floatingButtonState == FloatingButtonState.ADD_STATE)
-            floatingActionButton.setImageResource(R.drawable.ic_add_black);
-        else if(floatingButtonState == FloatingButtonState.SAVE_STATE)
-            floatingActionButton.setImageResource(R.drawable.ic_save_black);
+        if(BottomSheetBehavior.STATE_COLLAPSED > 0)
 
         floatingActionButton.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View v)
             {
-                if(floatingButtonState == FloatingButtonState.ADD_STATE)
-                {
+                bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
 
-                }
-                Note a = new Note(editText.getText().toString());
+                /*Note a = new Note(editText.getText().toString());
                 noteList.add(a);
                 noteAdapter.notifyDataSetChanged();
 
                 inputMethodManager.hideSoftInputFromWindow(editText.getWindowToken(), 0);
                 editText.clearFocus();
-                editText.getText().clear();
+                editText.getText().clear();*/
             }
         });
 
@@ -114,8 +102,6 @@ public class MainActivity extends AppCompatActivity
             {
                 Intent intent = new Intent(getApplicationContext(), EditNote.class);
                 intent.putExtra("edit_note", noteList.get(position).getNote());
-                /*intent.putExtra("noteAnime", ViewCompat.getTransitionName(view));
-                intent.putExtra("noteCardAnime", ViewCompat.getTransitionName(v));*/
                 Pair<View, String> pair1 = new Pair<>(view, ViewCompat.getTransitionName(view));
                 Pair<View, String> pair2 = new Pair<>(v, ViewCompat.getTransitionName(v));
                 ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(MainActivity.this, pair1, pair2);
