@@ -1,15 +1,29 @@
 package com.dhaval.wasd;
 
-public class Note
-{
-    private String note;
+import java.io.Serializable;
 
-    public Note(String note)
+public class Note implements Serializable
+{
+    private String noteTitle, note;
+    private boolean isChecked = false;
+
+    Note(String noteTitle, String note)
     {
+        this.noteTitle = noteTitle;
         this.note = note;
     }
 
-    public String getNote()
+    String getNoteTitle()
+    {
+        return noteTitle;
+    }
+
+    public void setNoteTitle(String noteTitle)
+    {
+        this.noteTitle = noteTitle;
+    }
+
+    String getNote()
     {
         return note;
     }
@@ -17,5 +31,15 @@ public class Note
     public void setNote(String note)
     {
         this.note = note;
+    }
+
+    boolean isChecked()
+    {
+        return isChecked;
+    }
+
+    void setChecked(boolean isChecked)
+    {
+        this.isChecked = isChecked;
     }
 }

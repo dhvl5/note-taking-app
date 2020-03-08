@@ -7,8 +7,7 @@
     android:orientation="vertical"
     android:id="@+id/bottom_sheet"
     app:behavior_hideable="true"
-    app:behavior_peekHeight="450dp"
-    app:behavior_fitToContents="false"
+    app:behavior_peekHeight="405dp"
     app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior" >
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -42,7 +41,8 @@
             android:layout_marginTop="100dp"
             android:layout_marginHorizontal="20dp"
             android:hint="Title"
-            android:paddingStart="10dp"/>
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp"/>
 
         <EditText
             android:id="@+id/descNoteEditText"
@@ -54,9 +54,11 @@
             android:layout_marginHorizontal="20dp"
             android:hint="Description"
             android:gravity="top"
-            android:paddingStart="10dp"/>
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp"/>
 
         <com.google.android.material.button.MaterialButton
+            android:id="@+id/createNoteBtn"
             android:layout_width="match_parent"
             android:layout_height="56dp"
             android:text="Create Note"

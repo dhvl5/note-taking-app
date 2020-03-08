@@ -1,23 +1,23 @@
 package com.dhaval.wasd;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
-import androidx.core.view.ViewCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.textview.MaterialTextView;
 
-import java.util.List;
+import java.util.ArrayList;
 
 public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.MyViewHolder>
 {
-    private Context context;
-    private List<Note> noteList;
+    private ArrayList<Note> noteList;
 
     private OnItemClickListener mListener;
 
@@ -26,19 +26,21 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.MyViewHolder>
         void OnItemClick(int position, View view, View v);
     }
 
-    public void setOnItemClickListener(OnItemClickListener listener)
+    void setOnItemClickListener(OnItemClickListener listener)
     {
         mListener = listener;
     }
 
-    public class MyViewHolder extends RecyclerView.ViewHolder
+    class MyViewHolder extends RecyclerView.ViewHolder
     {
-        public MaterialTextView noteText;
-        public MaterialCardView noteCard;
+        MaterialTextView noteText;
+        MaterialTextView noteTitle;
+        MaterialCardView noteCard;
 
-        public MyViewHolder(final View view)
+        MyViewHolder(final View view)
         {
             super(view);
+            noteTitle = view.findViewById(R.id.note_title);
             noteText = view.findViewById(R.id.note_txt);
             noteCard = view.findViewById(R.id.cv);
 
@@ -56,25 +58,65 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.MyViewHolder>
                 }
             });
         }
+
+        void bind(final Note note)
+        {
+            //noteCard.setVisibility(note.isChecked() ? View.VISIBLE : View.GONE);
+            noteTitle.setText(note.getNoteTitle());
+            noteText.setText(note.getNote());
+
+            itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    note.setChecked(!note.isChecked());
+                    //noteCard.setVisibility(note.isChecked() ? View.VISIBLE : View.GONE);
+                    if(note.isChecked())
+                        noteCard.setCardBackgroundColor(Color.BLACK);
+                    else
+                        noteCard.setCardBackgroundColor(Color.BLUE);
+                    Log.e("Long Pressed", "Long Pressed!!!");
+                    return true;
+                }
+            });
+        }
     }
 
-    public NoteAdapter(Context context, List<Note> noteList)
+    public ArrayList<Note> getAll()
     {
-        this.context = context;
+        return noteList;
+    }
+
+    ArrayList<Note> getSelected()
+    {
+        ArrayList<Note> selected = new ArrayList<>();
+        for(int i = 0; i < noteList.size(); i++)
+        {
+            if(noteList.get(i).isChecked())
+                selected.add(noteList.get(i));
+        }
+        return selected;
+    }
+
+    NoteAdapter(Context context, ArrayList<Note> noteList)
+    {
         this.noteList = noteList;
     }
 
     @NonNull
     @Override
-    public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType)
+    {
         View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.note_card, parent, false);
         return new MyViewHolder(itemView);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
-        Note note = noteList.get(position);
+    public void onBindViewHolder(@NonNull MyViewHolder holder, int position)
+    {
+        /*Note note = noteList.get(position);
         holder.noteText.setText(note.getNote());
+        holder.noteTitle.setText(note.getNoteTitle());*/
+        holder.bind(noteList.get(position));
     }
 
     @Override

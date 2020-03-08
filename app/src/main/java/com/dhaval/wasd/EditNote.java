@@ -10,7 +10,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 public class EditNote extends AppCompatActivity
 {
-    EditText editNote;
+    EditText editNote, editTitle;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState)
@@ -28,9 +28,12 @@ public class EditNote extends AppCompatActivity
         getWindow().setExitTransition(fade);
 
         editNote = findViewById(R.id.edit_note);
+        editTitle = findViewById(R.id.edit_title);
 
         editNote.setText(getIntent().getStringExtra("edit_note"));
         editNote.setTransitionName("noteAnime");
         editNote.setTransitionName("noteCardAnime");
+
+        editTitle.setText(getIntent().getStringExtra("edit_title"));
     }
 }
