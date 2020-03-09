@@ -170,10 +170,17 @@ public class MainActivity extends AppCompatActivity
 
         noteAdapter.setOnItemClickListener(new NoteAdapter.OnItemClickListener() {
             @Override
-            public void OnItemClick(int position, View view, View v)
+            public void OnItemClick(int position, View view, View v, NoteAdapter.MyViewHolder holder)
             {
                 if(noteAdapter.getSelected().size() > 0)
+                {
+                    noteList.get(position).setChecked(!noteList.get(position).isChecked());
+                    if(noteList.get(position).isChecked())
+                        holder.noteCard.setCardBackgroundColor(Color.BLACK);
+                    else
+                        holder.noteCard.setCardBackgroundColor(Color.BLUE);
                     return;
+                }
 
                 Intent intent = new Intent(getApplicationContext(), EditNote.class);
                 intent.putExtra("edit_note", noteList.get(position).getNote());

@@ -23,7 +23,7 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.MyViewHolder>
 
     public interface OnItemClickListener
     {
-        void OnItemClick(int position, View view, View v);
+        void OnItemClick(int position, View view, View v, MyViewHolder holder);
     }
 
     void setOnItemClickListener(OnItemClickListener listener)
@@ -52,7 +52,7 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.MyViewHolder>
                         int position = getAdapterPosition();
                         if(position != RecyclerView.NO_POSITION)
                         {
-                            mListener.OnItemClick(position, noteText, noteCard);
+                            mListener.OnItemClick(position, noteText, noteCard, MyViewHolder.this);
                         }
                     }
                 }
@@ -61,7 +61,6 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.MyViewHolder>
 
         void bind(final Note note)
         {
-            //noteCard.setVisibility(note.isChecked() ? View.VISIBLE : View.GONE);
             noteTitle.setText(note.getNoteTitle());
             noteText.setText(note.getNote());
 
@@ -69,7 +68,6 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.MyViewHolder>
                 @Override
                 public boolean onLongClick(View v) {
                     note.setChecked(!note.isChecked());
-                    //noteCard.setVisibility(note.isChecked() ? View.VISIBLE : View.GONE);
                     if(note.isChecked())
                         noteCard.setCardBackgroundColor(Color.BLACK);
                     else
