@@ -10,8 +10,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
@@ -69,24 +71,22 @@ public class MainActivity extends AppCompatActivity
         assert inputMethodManager != null;
 
         dimBackgroundView = findViewById(R.id.dimBackground);
-        dimBackgroundView.setVisibility(View.GONE);
-
         recyclerView = findViewById(R.id.rv);
-        noteList = new ArrayList<>();
-        noteAdapter = new NoteAdapter(this, noteList);
         getSelectedBtn = findViewById(R.id.getSelectedBtn);
-
         lottieAnimationView = findViewById(R.id.lottie);
-
         bottomSheet = findViewById(R.id.bottom_sheet);
-        bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
-        bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
-
         createNoteBtn = findViewById(R.id.createNoteBtn);
-
         titleEditText = findViewById(R.id.titleNoteEditText);
         descEditText = findViewById(R.id.descNoteEditText);
         floatingActionButton = findViewById(R.id.floating_btn);
+
+        dimBackgroundView.setVisibility(View.GONE);
+
+        noteList = new ArrayList<>();
+        noteAdapter = new NoteAdapter(this, noteList);
+
+        bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
+        bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
 
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
@@ -94,6 +94,15 @@ public class MainActivity extends AppCompatActivity
 
         floatingActionButton.setImageResource(R.drawable.ic_add_black);
 
+        if(inputMethodManager.hideSoftInputFromWindow(titleEditText.getWindowToken(), 0))
+            titleEditText.clearFocus();
+        if(inputMethodManager.hideSoftInputFromWindow(descEditText.getWindowToken(), 0))
+            descEditText.clearFocus();
+
+        ClearFocus(titleEditText, inputMethodManager);
+        ClearFocus(descEditText, inputMethodManager);
+
+        //region getSelectedBtn click listener
         getSelectedBtn.setOnClickListener(new View.OnClickListener()
         {
             @Override
@@ -113,17 +122,41 @@ public class MainActivity extends AppCompatActivity
                     ShowToast("No Selection!!!");
             }
         });
+        //endregion
 
+        //region floatingActionButton click listener
         floatingActionButton.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View v)
             {
-                bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+                if(noteAdapter.getSelected().size() > 0)
+                {
+                    for(int i = 0; i < noteAdapter.getSelected().size(); i++)
+                    {
+                        noteList.remove(noteAdapter.getSelected().get(i));
+                        noteAdapter.notifyItemRemoved(i);
+                    }
+                    noteAdapter.notifyDataSetChanged();
+                    return;
+                }
+
                 HideFloatingButton();
+                dimBackgroundView.setVisibility(View.VISIBLE);
+                ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(dimBackgroundView, "Alpha", .7f);
+                objectAnimator.setDuration(1000);
+                objectAnimator.start();
+                objectAnimator.addListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+                    }
+                });
             }
         });
+        //endregion
 
+        //region createNoteBtn click listener
         createNoteBtn.setOnClickListener(new View.OnClickListener()
         {
             @Override
@@ -144,16 +177,16 @@ public class MainActivity extends AppCompatActivity
 
                     float radius = (float) Math.hypot(centerX, centerY);
 
-                    Animator anime = ViewAnimationUtils.createCircularReveal(lottieAnimationView, centerX, centerY, radius, 0);
-                    anime.setDuration(1000);
-                    anime.addListener(new AnimatorListenerAdapter() {
+                    Animator animator = ViewAnimationUtils.createCircularReveal(lottieAnimationView, centerX, centerY, radius, 0);
+                    animator.setDuration(1000);
+                    animator.addListener(new AnimatorListenerAdapter() {
                         @Override
                         public void onAnimationEnd(Animator animation) {
                             super.onAnimationEnd(animation);
                             lottieAnimationView.setVisibility(View.INVISIBLE);
                         }
                     });
-                    anime.start();
+                    animator.start();
 
                     inputMethodManager.hideSoftInputFromWindow(titleEditText.getWindowToken(), 0);
                     titleEditText.clearFocus();
@@ -167,8 +200,11 @@ public class MainActivity extends AppCompatActivity
                 RevealFloatingButton();
             }
         });
+        //endregion
 
-        noteAdapter.setOnItemClickListener(new NoteAdapter.OnItemClickListener() {
+        //region noteAdapter single click listener
+        noteAdapter.setOnItemClickListener(new NoteAdapter.OnItemClickListener()
+        {
             @Override
             public void OnItemClick(int position, View view, View v, NoteAdapter.MyViewHolder holder)
             {
@@ -191,44 +227,37 @@ public class MainActivity extends AppCompatActivity
                 startActivity(intent, options.toBundle());
             }
         });
+        //endregion
 
+        //region noteAdapter long click listener
+        noteAdapter.setOnItemLongClickListener(new NoteAdapter.OnItemLongClickListener()
+        {
+            @Override
+            public void OnLongClick(int position, NoteAdapter.MyViewHolder holder)
+            {
+                floatingActionButton.setRippleColor(ColorStateList.valueOf(Color.TRANSPARENT));
+                floatingActionButton.setBackgroundTintList(ColorStateList.valueOf(Color.RED));
+                floatingActionButton.setImageResource(R.drawable.ic_delete_white);
+                floatingActionButton.setColorFilter(Color.RED, PorterDuff.Mode.LIGHTEN);
+                noteList.get(position).setChecked(!noteList.get(position).isChecked());
+                if(noteList.get(position).isChecked())
+                    holder.noteCard.setCardBackgroundColor(Color.BLACK);
+                else
+                    holder.noteCard.setCardBackgroundColor(Color.BLUE);
+            }
+        });
+        //endregion
+
+        //region dimBackgroundView click listener
         dimBackgroundView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
             }
         });
+        //endregion
 
-        if(inputMethodManager.hideSoftInputFromWindow(titleEditText.getWindowToken(), 0))
-            titleEditText.clearFocus();
-        if(inputMethodManager.hideSoftInputFromWindow(descEditText.getWindowToken(), 0))
-            descEditText.clearFocus();
-
-        titleEditText.setOnFocusChangeListener(new View.OnFocusChangeListener()
-        {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus)
-            {
-                if(!hasFocus)
-                {
-                    inputMethodManager.hideSoftInputFromWindow(titleEditText.getWindowToken(), 0);
-                    titleEditText.clearFocus();
-                }
-            }
-        });
-        descEditText.setOnFocusChangeListener(new View.OnFocusChangeListener()
-        {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus)
-            {
-                if(!hasFocus)
-                {
-                    inputMethodManager.hideSoftInputFromWindow(descEditText.getWindowToken(), 0);
-                    descEditText.clearFocus();
-                }
-            }
-        });
-
+        //region bottomSheetBehavior callback
         bottomSheetBehavior.addBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback()
         {
             @Override
@@ -239,16 +268,24 @@ public class MainActivity extends AppCompatActivity
                     if(floatingActionButton.getVisibility() != View.VISIBLE)
                         RevealFloatingButton();
                     dimBackgroundView.setVisibility(View.GONE);
+                    dimBackgroundView.setAlpha(0);
+
+                    if(inputMethodManager.hideSoftInputFromWindow(titleEditText.getWindowToken(), 0))
+                        titleEditText.clearFocus();
+                    if(inputMethodManager.hideSoftInputFromWindow(descEditText.getWindowToken(), 0))
+                        descEditText.clearFocus();
                 }
+                /*else if(newState == BottomSheetBehavior.STATE_DRAGGING)
+                    bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);*/
             }
 
             @Override
             public void onSlide(@NonNull View bottomSheet, float slideOffset)
             {
-                dimBackgroundView.setVisibility(View.VISIBLE);
-                dimBackgroundView.setAlpha(slideOffset + 0.5f);
+
             }
         });
+        //endregion
     }
 
     private void RevealFloatingButton()
@@ -281,6 +318,19 @@ public class MainActivity extends AppCompatActivity
             }
         });
         animator.start();
+    }
+
+    private void ClearFocus(final EditText editText, final InputMethodManager inputMethodManager)
+    {
+        editText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if(!hasFocus) {
+                    inputMethodManager.hideSoftInputFromWindow(editText.getWindowToken(), 0);
+                    editText.clearFocus();
+                }
+            }
+        });
     }
 
     private void ShowToast(String msg)

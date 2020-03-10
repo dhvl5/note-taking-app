@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -29,6 +30,18 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.MyViewHolder>
     void setOnItemClickListener(OnItemClickListener listener)
     {
         mListener = listener;
+    }
+
+    private OnItemLongClickListener mLongListener;
+
+    public interface OnItemLongClickListener
+    {
+        void OnLongClick(int position, MyViewHolder holder);
+    }
+
+    void setOnItemLongClickListener(OnItemLongClickListener listener)
+    {
+        mLongListener = listener;
     }
 
     class MyViewHolder extends RecyclerView.ViewHolder
@@ -57,6 +70,21 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.MyViewHolder>
                     }
                 }
             });
+
+            view.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    if(mLongListener != null)
+                    {
+                        int position = getAdapterPosition();
+                        if(position != RecyclerView.NO_POSITION)
+                        {
+                            mLongListener.OnLongClick(position, MyViewHolder.this);
+                        }
+                    }
+                    return true;
+                }
+            });
         }
 
         void bind(final Note note)
@@ -64,7 +92,7 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.MyViewHolder>
             noteTitle.setText(note.getNoteTitle());
             noteText.setText(note.getNote());
 
-            itemView.setOnLongClickListener(new View.OnLongClickListener() {
+            /*itemView.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
                     note.setChecked(!note.isChecked());
@@ -75,7 +103,7 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.MyViewHolder>
                     Log.e("Long Pressed", "Long Pressed!!!");
                     return true;
                 }
-            });
+            });*/
         }
     }
 
