@@ -47,7 +47,6 @@ public class MainActivity extends AppCompatActivity
     RecyclerView recyclerView;
     NoteAdapter noteAdapter;
     ArrayList<Note> noteList;
-    MaterialButton getSelectedBtn;
 
     View dimBackgroundView;
 
@@ -72,7 +71,6 @@ public class MainActivity extends AppCompatActivity
 
         dimBackgroundView = findViewById(R.id.dimBackground);
         recyclerView = findViewById(R.id.rv);
-        getSelectedBtn = findViewById(R.id.getSelectedBtn);
         lottieAnimationView = findViewById(R.id.lottie);
         bottomSheet = findViewById(R.id.bottom_sheet);
         createNoteBtn = findViewById(R.id.createNoteBtn);
@@ -102,28 +100,6 @@ public class MainActivity extends AppCompatActivity
         ClearFocus(titleEditText, inputMethodManager);
         ClearFocus(descEditText, inputMethodManager);
 
-        //region getSelectedBtn click listener
-        getSelectedBtn.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                if(noteAdapter.getSelected().size() > 0)
-                {
-                    StringBuilder stringBuilder = new StringBuilder();
-                    for(int i = 0; i < noteAdapter.getSelected().size(); i++)
-                    {
-                        stringBuilder.append(noteAdapter.getSelected().get(i).getNoteTitle());
-                        stringBuilder.append("\n");
-                    }
-                    ShowToast(stringBuilder.toString().trim());
-                }
-                else
-                    ShowToast("No Selection!!!");
-            }
-        });
-        //endregion
-
         //region floatingActionButton click listener
         floatingActionButton.setOnClickListener(new View.OnClickListener()
         {
@@ -132,12 +108,16 @@ public class MainActivity extends AppCompatActivity
             {
                 if(noteAdapter.getSelected().size() > 0)
                 {
-                    for(int i = 0; i < noteAdapter.getSelected().size(); i++)
+                    for(Note n : new ArrayList<>(noteAdapter.getSelected()))
                     {
-                        noteList.remove(noteAdapter.getSelected().get(i));
-                        noteAdapter.notifyItemRemoved(i);
+                        noteList.remove(n);
+                        noteAdapter.notifyItemRemoved(noteList.size());
+                        noteAdapter.notifyDataSetChanged();
                     }
-                    noteAdapter.notifyDataSetChanged();
+                    floatingActionButton.setRippleColor(ColorStateList.valueOf(Color.BLACK));
+                    floatingActionButton.setBackgroundTintList(getColorStateList(R.color.colorAccent));
+                    floatingActionButton.setImageResource(R.drawable.ic_add_black);
+                    floatingActionButton.setColorFilter(Color.TRANSPARENT, PorterDuff.Mode.LIGHTEN);
                     return;
                 }
 
@@ -212,9 +192,13 @@ public class MainActivity extends AppCompatActivity
                 {
                     noteList.get(position).setChecked(!noteList.get(position).isChecked());
                     if(noteList.get(position).isChecked())
-                        holder.noteCard.setCardBackgroundColor(Color.BLACK);
+                    {
+                        holder.noteCard.setCardBackgroundColor(Color.GRAY);
+                    }
                     else
-                        holder.noteCard.setCardBackgroundColor(Color.BLUE);
+                    {
+                        holder.noteCard.setCardBackgroundColor(Color.WHITE);
+                    }
                     return;
                 }
 
@@ -241,9 +225,13 @@ public class MainActivity extends AppCompatActivity
                 floatingActionButton.setColorFilter(Color.RED, PorterDuff.Mode.LIGHTEN);
                 noteList.get(position).setChecked(!noteList.get(position).isChecked());
                 if(noteList.get(position).isChecked())
-                    holder.noteCard.setCardBackgroundColor(Color.BLACK);
+                {
+                    holder.noteCard.setCardBackgroundColor(Color.GRAY);
+                }
                 else
-                    holder.noteCard.setCardBackgroundColor(Color.BLUE);
+                {
+                    holder.noteCard.setCardBackgroundColor(Color.WHITE);
+                }
             }
         });
         //endregion
@@ -275,8 +263,8 @@ public class MainActivity extends AppCompatActivity
                     if(inputMethodManager.hideSoftInputFromWindow(descEditText.getWindowToken(), 0))
                         descEditText.clearFocus();
                 }
-                /*else if(newState == BottomSheetBehavior.STATE_DRAGGING)
-                    bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);*/
+                else if( newState == BottomSheetBehavior.STATE_DRAGGING)
+                    bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
             }
 
             @Override

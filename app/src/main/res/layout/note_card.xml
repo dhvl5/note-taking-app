@@ -11,8 +11,10 @@
         android:layout_height="100dp"
         android:transitionName="noteCardAnime"
         android:layout_margin="5dp"
+        app:strokeWidth="1dp"
+        app:strokeColor="@android:color/black"
         app:cardCornerRadius="15dp"
-        app:cardBackgroundColor="@android:color/holo_blue_bright">
+        app:cardBackgroundColor="@android:color/white">
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/note_title"

@@ -2,11 +2,9 @@ package com.dhaval.wasd;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -87,24 +85,11 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.MyViewHolder>
             });
         }
 
-        void bind(final Note note)
+        /*void bind(final Note note)
         {
             noteTitle.setText(note.getNoteTitle());
             noteText.setText(note.getNote());
-
-            /*itemView.setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View v) {
-                    note.setChecked(!note.isChecked());
-                    if(note.isChecked())
-                        noteCard.setCardBackgroundColor(Color.BLACK);
-                    else
-                        noteCard.setCardBackgroundColor(Color.BLUE);
-                    Log.e("Long Pressed", "Long Pressed!!!");
-                    return true;
-                }
-            });*/
-        }
+        }*/
     }
 
     public ArrayList<Note> getAll()
@@ -139,10 +124,13 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.MyViewHolder>
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position)
     {
-        /*Note note = noteList.get(position);
+        Note note = noteList.get(position);
         holder.noteText.setText(note.getNote());
-        holder.noteTitle.setText(note.getNoteTitle());*/
-        holder.bind(noteList.get(position));
+        holder.noteTitle.setText(note.getNoteTitle());
+        //holder.bind(noteList.get(position));
+
+        if(getSelected().isEmpty())
+            holder.noteCard.setCardBackgroundColor(Color.WHITE);
     }
 
     @Override
