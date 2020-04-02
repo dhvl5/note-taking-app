@@ -5,10 +5,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityOptionsCompat;
 import androidx.core.util.Pair;
 import androidx.core.view.ViewCompat;
-import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -207,6 +205,14 @@ public class MainActivity extends AppCompatActivity
                     {
                         holder.noteCard.setCardBackgroundColor(Color.WHITE);
                     }
+
+                    if(noteAdapter.getSelected().size() == 0)
+                    {
+                        floatingActionButton.setRippleColor(ColorStateList.valueOf(Color.BLACK));
+                        floatingActionButton.setBackgroundTintList(getColorStateList(R.color.colorAccent));
+                        floatingActionButton.setImageResource(R.drawable.ic_add_black);
+                        floatingActionButton.setColorFilter(Color.TRANSPARENT, PorterDuff.Mode.LIGHTEN);
+                    }
                     return;
                 }
 
@@ -239,6 +245,14 @@ public class MainActivity extends AppCompatActivity
                 else
                 {
                     holder.noteCard.setCardBackgroundColor(Color.WHITE);
+                }
+
+                if(noteAdapter.getSelected().size() == 0)
+                {
+                    floatingActionButton.setRippleColor(ColorStateList.valueOf(Color.BLACK));
+                    floatingActionButton.setBackgroundTintList(getColorStateList(R.color.colorAccent));
+                    floatingActionButton.setImageResource(R.drawable.ic_add_black);
+                    floatingActionButton.setColorFilter(Color.TRANSPARENT, PorterDuff.Mode.LIGHTEN);
                 }
             }
         });
