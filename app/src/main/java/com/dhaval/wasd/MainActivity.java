@@ -1,6 +1,7 @@
 package com.dhaval.wasd;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityOptionsCompat;
 import androidx.core.util.Pair;
@@ -16,17 +17,22 @@ import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.os.Build;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.transition.Fade;
 import android.view.View;
 import android.view.ViewAnimationUtils;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.airbnb.lottie.LottieAnimationView;
+import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -37,7 +43,7 @@ public class MainActivity extends AppCompatActivity
 {
     static long backPressed;
 
-    EditText titleEditText, descEditText;
+    EditText titleEditText, descEditText, searchEditText;
     FloatingActionButton floatingActionButton;
 
     RelativeLayout bottomSheet;
@@ -47,6 +53,10 @@ public class MainActivity extends AppCompatActivity
     RecyclerView recyclerView;
     NoteAdapter noteAdapter;
     ArrayList<Note> noteList;
+    ArrayList<Note> filteredList;
+
+    ImageButton searchImageButton, searchCloseImageButton;
+    MaterialToolbar searchToolbar;
 
     View dimBackgroundView;
 
@@ -77,10 +87,16 @@ public class MainActivity extends AppCompatActivity
         titleEditText = findViewById(R.id.titleNoteEditText);
         descEditText = findViewById(R.id.descNoteEditText);
         floatingActionButton = findViewById(R.id.floating_btn);
+        searchImageButton = findViewById(R.id.searchImageButton);
+        searchCloseImageButton = findViewById(R.id.searchCloseImageButton);
+        searchToolbar = findViewById(R.id.searchToolbar);
+        searchEditText = findViewById(R.id.searchEditText);
 
         dimBackgroundView.setVisibility(View.GONE);
+        searchToolbar.setVisibility(View.INVISIBLE);
 
         noteList = new ArrayList<>();
+        filteredList = new ArrayList<>();
         noteAdapter = new NoteAdapter(this, noteList);
 
         bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
@@ -124,10 +140,14 @@ public class MainActivity extends AppCompatActivity
                     floatingActionButton.setBackgroundTintList(getColorStateList(R.color.colorAccent));
                     floatingActionButton.setImageResource(R.drawable.ic_add_black);
                     floatingActionButton.setColorFilter(Color.TRANSPARENT, PorterDuff.Mode.LIGHTEN);
+
+                    if(noteAdapter.getSelected().size() == noteList.size())
+                        RevealAnimation(lottieAnimationView, 1000);
+
                     return;
                 }
 
-                HideFloatingButton();
+                HideAnimation(floatingActionButton, 500);
                 dimBackgroundView.setVisibility(View.VISIBLE);
                 ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(dimBackgroundView, "Alpha", .7f);
                 objectAnimator.setDuration(1000);
@@ -158,21 +178,7 @@ public class MainActivity extends AppCompatActivity
                     noteList.add(a);
                     noteAdapter.notifyDataSetChanged();
 
-                    int centerX = lottieAnimationView.getWidth() / 2;
-                    int centerY = lottieAnimationView.getHeight() / 2;
-
-                    float radius = (float) Math.hypot(centerX, centerY);
-
-                    Animator animator = ViewAnimationUtils.createCircularReveal(lottieAnimationView, centerX, centerY, radius, 0);
-                    animator.setDuration(1000);
-                    animator.addListener(new AnimatorListenerAdapter() {
-                        @Override
-                        public void onAnimationEnd(Animator animation) {
-                            super.onAnimationEnd(animation);
-                            lottieAnimationView.setVisibility(View.INVISIBLE);
-                        }
-                    });
-                    animator.start();
+                    HideAnimation(lottieAnimationView, 1000);
 
                     inputMethodManager.hideSoftInputFromWindow(titleEditText.getWindowToken(), 0);
                     titleEditText.clearFocus();
@@ -183,7 +189,7 @@ public class MainActivity extends AppCompatActivity
                     descEditText.getText().clear();
                 }
                 bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
-                RevealFloatingButton();
+                RevealAnimation(floatingActionButton, 500);
             }
         });
         //endregion
@@ -276,7 +282,7 @@ public class MainActivity extends AppCompatActivity
                 if(newState == BottomSheetBehavior.STATE_HIDDEN)
                 {
                     if(floatingActionButton.getVisibility() != View.VISIBLE)
-                        RevealFloatingButton();
+                        RevealAnimation(floatingActionButton, 500);
                     dimBackgroundView.setVisibility(View.GONE);
                     dimBackgroundView.setAlpha(0);
 
@@ -296,35 +302,116 @@ public class MainActivity extends AppCompatActivity
             }
         });
         //endregion
+
+        //region searchImageButton click listener
+        searchImageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SearchBarReveal(searchToolbar, 300, .3f, true, true);
+                searchEditText.requestFocus();
+                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                assert imm != null;
+                imm.showSoftInput(searchEditText, InputMethodManager.SHOW_IMPLICIT);
+            }
+        });
+        //endregion
+
+        //region searchCloseImageButton click listener
+        searchCloseImageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SearchBarReveal(searchToolbar, 300, .3f, true, false);
+                ClearFocus(searchEditText, inputMethodManager);
+                searchEditText.getText().clear();
+            }
+        });
+        //endregion
+
+        searchEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) { }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if(s != null)
+                    noteAdapter.SearchedList(s.toString());
+                else
+                    noteAdapter.notifyDataSetChanged();
+
+            }
+        });
     }
 
-    private void RevealFloatingButton()
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    public void SearchBarReveal(final View view, long duration, float posFromRight, boolean containsOverflow, final boolean isShow)
     {
-        int centerX = floatingActionButton.getWidth() / 2;
-        int centerY = floatingActionButton.getHeight() / 2;
+        int width = view.getWidth();
 
-        float radius = (float) Math.hypot(centerX, centerY);
+        if(posFromRight > 0)
+            width -= (posFromRight*getResources().getDimensionPixelSize(R.dimen.abc_action_button_min_width_material)) -
+                    (getResources().getDimensionPixelSize(R.dimen.abc_action_button_min_width_material) / 2);
 
-        Animator animator = ViewAnimationUtils.createCircularReveal(floatingActionButton, centerX, centerY, 0, radius);
-        animator.setDuration(500);
-        floatingActionButton.setVisibility(View.VISIBLE);
+        if(containsOverflow)
+            width -= getResources().getDimensionPixelSize(R.dimen.abc_action_button_min_width_overflow_material);
+
+        int centerX = width;
+        int centerY = view.getHeight() / 2;
+
+        Animator animator;
+        if(isShow)
+            animator = ViewAnimationUtils.createCircularReveal(view, centerX, centerY, 0, (float) width);
+        else
+            animator = ViewAnimationUtils.createCircularReveal(view, centerX, centerY, (float) width, 0);
+
+        animator.setDuration(duration);
+
+        animator.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                if(!isShow)
+                {
+                    super.onAnimationEnd(animation);
+                    view.setVisibility(View.INVISIBLE);
+                }
+            }
+        });
+
+        if(isShow)
+            view.setVisibility(View.VISIBLE);
+
         animator.start();
     }
 
-    private void HideFloatingButton()
+    private void RevealAnimation(View view, long duration)
     {
-        int centerX = floatingActionButton.getWidth() / 2;
-        int centerY = floatingActionButton.getHeight() / 2;
+        int centerX = view.getWidth() / 2;
+        int centerY = view.getHeight() / 2;
 
         float radius = (float) Math.hypot(centerX, centerY);
 
-        Animator animator = ViewAnimationUtils.createCircularReveal(floatingActionButton, centerX, centerY, radius, 0);
-        animator.setDuration(500);
+        Animator animator = ViewAnimationUtils.createCircularReveal(view, centerX, centerY, 0, radius);
+        animator.setDuration(duration);
+        view.setVisibility(View.VISIBLE);
+        animator.start();
+    }
+
+    private void HideAnimation(final View view, long duration)
+    {
+        int centerX = view.getWidth() / 2;
+        int centerY = view.getHeight() / 2;
+
+        float radius = (float) Math.hypot(centerX, centerY);
+
+        Animator animator = ViewAnimationUtils.createCircularReveal(view, centerX, centerY, radius, 0);
+        animator.setDuration(duration);
         animator.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
                 super.onAnimationEnd(animation);
-                floatingActionButton.setVisibility(View.INVISIBLE);
+                view.setVisibility(View.INVISIBLE);
             }
         });
         animator.start();

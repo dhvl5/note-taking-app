@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Filter;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -17,6 +18,7 @@ import java.util.ArrayList;
 public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.MyViewHolder>
 {
     private ArrayList<Note> noteList;
+    private ArrayList<Note> noteFilteredList;
 
     private OnItemClickListener mListener;
 
@@ -84,12 +86,6 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.MyViewHolder>
                 }
             });
         }
-
-        /*void bind(final Note note)
-        {
-            noteTitle.setText(note.getNoteTitle());
-            noteText.setText(note.getNote());
-        }*/
     }
 
     public ArrayList<Note> getAll()
@@ -111,6 +107,26 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.MyViewHolder>
     NoteAdapter(Context context, ArrayList<Note> noteList)
     {
         this.noteList = noteList;
+        this.noteFilteredList = noteList;
+    }
+
+    void SearchedList(String text)
+    {
+        if(text != null)
+        {
+            ArrayList<Note> filteredList = new ArrayList<>();
+            for (Note note : noteList) {
+                if (note.getNoteTitle().contains(text)) {
+                    filteredList.add(note);
+                }
+            }
+            noteFilteredList = filteredList;
+        }
+        else
+        {
+            noteFilteredList = noteList;
+        }
+        this.notifyDataSetChanged();
     }
 
     @NonNull
@@ -124,10 +140,9 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.MyViewHolder>
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position)
     {
-        Note note = noteList.get(position);
+        Note note = noteFilteredList.get(position);
         holder.noteText.setText(note.getNote());
         holder.noteTitle.setText(note.getNoteTitle());
-        //holder.bind(noteList.get(position));
 
         if(getSelected().isEmpty())
             holder.noteCard.setCardBackgroundColor(Color.WHITE);
@@ -135,6 +150,6 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.MyViewHolder>
 
     @Override
     public int getItemCount() {
-        return noteList.size();
+        return noteFilteredList.size();
     }
 }
