@@ -1,12 +1,29 @@
 <resources>
 
-    <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
+    <!-- Light theme. -->
+    <style name="LightTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="android:windowContentTransitions">true</item>
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorPrimary">#6200EE</item>
+        <item name="colorPrimaryDark">#263238</item>
+        <item name="colorAccent">#03DAC5</item>
+        <item name="bgColor">#FAFAFA</item>
+        <item name="strokeColor">#607D8B</item>
+        <item name="hintTextColor">#263238</item>
+        <item name="textColor">#000000</item>
+    </style>
+
+    <!-- Dark theme. -->
+    <style name="DarkTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="android:windowContentTransitions">true</item>
+        <item name="colorPrimary">#424242</item>
+        <item name="colorPrimaryDark">#212121</item>
+        <item name="colorAccent">#03DAC5</item>
+        <item name="bgColor">#212121</item>
+        <item name="strokeColor">#424242</item>
+        <item name="hintTextColor">#607D8B</item>
+        <item name="textColor">#FAFAFA</item>
     </style>
 
 </resources>

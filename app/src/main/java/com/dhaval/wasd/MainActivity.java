@@ -1,5 +1,6 @@
 package com.dhaval.wasd;
 
+import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
@@ -15,6 +16,7 @@ import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.os.Build;
@@ -22,6 +24,7 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.transition.Fade;
+import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewAnimationUtils;
 import android.view.inputmethod.InputMethodManager;
@@ -55,7 +58,7 @@ public class MainActivity extends AppCompatActivity
     ArrayList<Note> noteList;
     ArrayList<Note> filteredList;
 
-    ImageButton searchImageButton, searchCloseImageButton;
+    ImageButton searchImageButton, searchCloseImageButton, themeModeImageButton;
     MaterialToolbar searchToolbar;
 
     View dimBackgroundView;
@@ -91,13 +94,14 @@ public class MainActivity extends AppCompatActivity
         searchCloseImageButton = findViewById(R.id.searchCloseImageButton);
         searchToolbar = findViewById(R.id.searchToolbar);
         searchEditText = findViewById(R.id.searchEditText);
+        themeModeImageButton = findViewById(R.id.themeModeImageButton);
 
         dimBackgroundView.setVisibility(View.GONE);
         searchToolbar.setVisibility(View.INVISIBLE);
 
         noteList = new ArrayList<>();
         filteredList = new ArrayList<>();
-        noteAdapter = new NoteAdapter(this, noteList);
+        noteAdapter = new NoteAdapter(noteList);
 
         bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
         bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
@@ -171,6 +175,14 @@ public class MainActivity extends AppCompatActivity
                 if(titleEditText.getText().toString().matches("") && descEditText.getText().toString().matches(""))
                 {
                     ShowToast("Empty note discarded!");
+
+                    inputMethodManager.hideSoftInputFromWindow(titleEditText.getWindowToken(), 0);
+                    titleEditText.clearFocus();
+                    titleEditText.getText().clear();
+
+                    inputMethodManager.hideSoftInputFromWindow(descEditText.getWindowToken(), 0);
+                    descEditText.clearFocus();
+                    descEditText.getText().clear();
                 }
                 else
                 {
@@ -205,11 +217,15 @@ public class MainActivity extends AppCompatActivity
                     noteList.get(position).setChecked(!noteList.get(position).isChecked());
                     if(noteList.get(position).isChecked())
                     {
-                        holder.noteCard.setCardBackgroundColor(Color.GRAY);
+                        holder.noteCard.setCardBackgroundColor(R.attr.textColor);
+                        holder.noteCard.setBackgroundTintList(ColorStateList.valueOf(R.attr.textColor));
+                        holder.noteCard.setStrokeWidth(15);
                     }
                     else
                     {
-                        holder.noteCard.setCardBackgroundColor(Color.WHITE);
+                        holder.noteCard.setCardBackgroundColor(Color.TRANSPARENT);
+                        holder.noteCard.setBackgroundTintList(ColorStateList.valueOf(Color.TRANSPARENT));
+                        holder.noteCard.setStrokeWidth(5);
                     }
 
                     if(noteAdapter.getSelected().size() == 0)
@@ -246,11 +262,15 @@ public class MainActivity extends AppCompatActivity
                 noteList.get(position).setChecked(!noteList.get(position).isChecked());
                 if(noteList.get(position).isChecked())
                 {
-                    holder.noteCard.setCardBackgroundColor(Color.GRAY);
+                    holder.noteCard.setCardBackgroundColor(R.attr.textColor);
+                    holder.noteCard.setBackgroundTintList(ColorStateList.valueOf(R.attr.textColor));
+                    holder.noteCard.setStrokeWidth(15);
                 }
                 else
                 {
-                    holder.noteCard.setCardBackgroundColor(Color.WHITE);
+                    holder.noteCard.setCardBackgroundColor(Color.TRANSPARENT);
+                    holder.noteCard.setBackgroundTintList(ColorStateList.valueOf(Color.TRANSPARENT));
+                    holder.noteCard.setStrokeWidth(5);
                 }
 
                 if(noteAdapter.getSelected().size() == 0)
@@ -286,10 +306,8 @@ public class MainActivity extends AppCompatActivity
                     dimBackgroundView.setVisibility(View.GONE);
                     dimBackgroundView.setAlpha(0);
 
-                    if(inputMethodManager.hideSoftInputFromWindow(titleEditText.getWindowToken(), 0))
-                        titleEditText.clearFocus();
-                    if(inputMethodManager.hideSoftInputFromWindow(descEditText.getWindowToken(), 0))
-                        descEditText.clearFocus();
+                    ClearFocus(titleEditText, inputMethodManager);
+                    ClearFocus(descEditText, inputMethodManager);
                 }
                 else if( newState == BottomSheetBehavior.STATE_DRAGGING)
                     bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
@@ -308,6 +326,7 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onClick(View v) {
                 SearchBarReveal(searchToolbar, 300, .3f, true, true);
+                HideAnimation(floatingActionButton, 500);
                 searchEditText.requestFocus();
                 InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                 assert imm != null;
@@ -320,6 +339,7 @@ public class MainActivity extends AppCompatActivity
         searchCloseImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                RevealAnimation(floatingActionButton, 500);
                 SearchBarReveal(searchToolbar, 300, .3f, true, false);
                 ClearFocus(searchEditText, inputMethodManager);
                 searchEditText.getText().clear();
@@ -336,11 +356,7 @@ public class MainActivity extends AppCompatActivity
 
             @Override
             public void afterTextChanged(Editable s) {
-                if(s != null)
-                    noteAdapter.SearchedList(s.toString());
-                else
-                    noteAdapter.notifyDataSetChanged();
-
+                noteAdapter.getFilter().filter(s);
             }
         });
     }

@@ -13,10 +13,10 @@
         android:layout_margin="5dp"
         android:transitionName="noteCardAnime"
         app:rippleColor="@android:color/black"
-        app:cardBackgroundColor="@android:color/white"
+        app:cardBackgroundColor="?attr/bgColor"
         app:cardCornerRadius="15dp"
-        app:strokeColor="@android:color/black"
-        app:strokeWidth="1dp">
+        app:strokeColor="?attr/strokeColor"
+        app:strokeWidth="5dp">
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/note_title"
@@ -24,9 +24,11 @@
             android:layout_height="wrap_content"
             android:paddingStart="15dp"
             android:paddingEnd="15dp"
+            android:layout_marginTop="5dp"
             android:text="Dhaval Prajapati Title"
-            android:textColor="@android:color/black"
+            android:textColor="?attr/textColor"
             android:textSize="20sp"
+            android:textStyle="bold"
             android:transitionName="noteAnime" />
 
         <com.google.android.material.textview.MaterialTextView
@@ -37,7 +39,7 @@
             android:paddingStart="15dp"
             android:paddingEnd="15dp"
             android:text="Dhaval Prajapati"
-            android:textColor="@android:color/black"
+            android:textColor="?attr/textColor"
             android:textSize="17sp"
             android:transitionName="noteAnime" />
 

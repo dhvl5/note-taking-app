@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".MainActivity"
+    android:background="?attr/bgColor">
 
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/toolbar"
@@ -12,7 +13,7 @@
         android:layout_height="?attr/actionBarSize"
         android:elevation="1dp"
         android:translationZ="-1dp"
-        android:background="@android:color/white">
+        android:background="?attr/bgColor">
 
         <ImageButton
             android:id="@+id/searchImageButton"
@@ -23,12 +24,22 @@
             android:src="@drawable/ic_search_black"
             android:background="@drawable/custom_button" />
 
+        <ImageButton
+            android:id="@+id/themeModeImageButton"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_gravity="end"
+            android:translationX="-7dp"
+            android:src="@drawable/ic_sun_black"
+            android:background="@drawable/custom_button" />
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="9ote"
             android:textSize="30sp"
             android:textStyle="bold"
+            android:textColor="?attr/textColor"
             android:fontFamily="monospace"
             android:layout_gravity="center" />
 
@@ -38,7 +49,8 @@
         android:id="@+id/searchToolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="@android:color/darker_gray">
+        android:background="?attr/strokeColor"
+        android:visibility="invisible">
 
         <ImageButton
             android:id="@+id/searchCloseImageButton"
@@ -54,7 +66,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:textCursorDrawable="@null"
-            android:textColor="#000000"
+            android:textColor="?attr/textColor"
             android:background="@android:color/transparent" />
 
     </com.google.android.material.appbar.MaterialToolbar>

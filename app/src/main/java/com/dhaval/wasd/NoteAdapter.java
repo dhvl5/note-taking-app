@@ -1,11 +1,14 @@
 package com.dhaval.wasd;
 
-import android.content.Context;
+import android.content.res.ColorStateList;
 import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Filter;
+import android.widget.Filterable;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -14,8 +17,9 @@ import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.textview.MaterialTextView;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 
-public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.MyViewHolder>
+public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.MyViewHolder> implements Filterable
 {
     private ArrayList<Note> noteList;
     private ArrayList<Note> noteFilteredList;
@@ -104,29 +108,48 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.MyViewHolder>
         return selected;
     }
 
-    NoteAdapter(Context context, ArrayList<Note> noteList)
+    NoteAdapter(ArrayList<Note> noteList)
     {
         this.noteList = noteList;
         this.noteFilteredList = noteList;
     }
 
-    void SearchedList(String text)
+    @Override
+    public Filter getFilter()
     {
-        if(text != null)
-        {
-            ArrayList<Note> filteredList = new ArrayList<>();
-            for (Note note : noteList) {
-                if (note.getNoteTitle().contains(text)) {
-                    filteredList.add(note);
-                }
+        return new Filter() {
+            @Override
+            protected FilterResults performFiltering(CharSequence constraint) {
+                ArrayList<Note> filteredList = null;
+                if(constraint.length() == 0)
+                    filteredList = noteList;
+                else
+                    filteredList = getFilteredResults(constraint.toString().toLowerCase());
+
+                FilterResults results = new FilterResults();
+                results.values = filteredList;
+
+                return results;
             }
-            noteFilteredList = filteredList;
-        }
-        else
+
+            @SuppressWarnings("unchecked")
+            @Override
+            protected void publishResults(CharSequence constraint, FilterResults results) {
+                noteFilteredList = (ArrayList<Note>) results.values;
+                notifyDataSetChanged();
+            }
+        };
+    }
+
+    private ArrayList<Note> getFilteredResults(String constraint)
+    {
+        ArrayList<Note> results = new ArrayList<>();
+        for(Note note : noteList)
         {
-            noteFilteredList = noteList;
+            if(note.getNoteTitle().toLowerCase().contains(constraint) || note.getNote().toLowerCase().contains(constraint))
+                results.add(note);
         }
-        this.notifyDataSetChanged();
+        return results;
     }
 
     @NonNull
@@ -145,7 +168,12 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.MyViewHolder>
         holder.noteTitle.setText(note.getNoteTitle());
 
         if(getSelected().isEmpty())
-            holder.noteCard.setCardBackgroundColor(Color.WHITE);
+        {
+            holder.noteCard.setCardBackgroundColor(Color.TRANSPARENT);
+            holder.noteCard.setBackgroundTintList(ColorStateList.valueOf(Color.TRANSPARENT));
+            holder.noteCard.setBackgroundColor(Color.TRANSPARENT);
+            holder.noteCard.setStrokeWidth(5);
+        }
     }
 
     @Override
