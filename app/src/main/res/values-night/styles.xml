@@ -1,16 +1,16 @@
 <resources>
 
-    <!-- Light theme. -->
+    <!-- Dark theme. -->
     <style name="AppTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="android:windowContentTransitions">true</item>
-        <item name="colorPrimary">#6200EE</item>
-        <item name="colorPrimaryDark">#263238</item>
+        <item name="colorPrimary">#424242</item>
+        <item name="colorPrimaryDark">#212121</item>
         <item name="colorAccent">#03DAC5</item>
-        <item name="bgColor">#FAFAFA</item>
-        <item name="strokeColor">#607D8B</item>
-        <item name="hintTextColor">#263238</item>
-        <item name="textColor">#000000</item>
+        <item name="bgColor">#212121</item>
+        <item name="strokeColor">#424242</item>
+        <item name="hintTextColor">#607D8B</item>
+        <item name="textColor">#FAFAFA</item>
         <item name="android:windowAnimationStyle">@style/WindowAnimationTransition</item>
     </style>
 

@@ -4,6 +4,7 @@ import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.app.ActivityOptionsCompat;
 import androidx.core.util.Pair;
 import androidx.core.view.ViewCompat;
@@ -13,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
@@ -64,6 +66,14 @@ public class MainActivity extends AppCompatActivity
     View dimBackgroundView;
 
     LottieAnimationView lottieAnimationView;
+
+    @Override
+    public void recreate() {
+        finish();
+        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+        startActivity(getIntent());
+        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -126,6 +136,17 @@ public class MainActivity extends AppCompatActivity
         ClearFocus(titleEditText, inputMethodManager);
         ClearFocus(descEditText, inputMethodManager);
 
+        themeModeImageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_NO)
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+                else
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+                recreate();
+            }
+        });
+
         //region floatingActionButton click listener
         floatingActionButton.setOnClickListener(new View.OnClickListener()
         {
@@ -134,7 +155,7 @@ public class MainActivity extends AppCompatActivity
             {
                 if(noteAdapter.getSelected().size() > 0)
                 {
-                    for(Note n : new ArrayList<>(noteAdapter.getSelected()))
+                    for(Note n : noteAdapter.getSelected())
                     {
                         noteList.remove(n);
                         noteAdapter.notifyItemRemoved(noteList.size());
