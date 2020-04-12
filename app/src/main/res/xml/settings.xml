@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory
+        android:title="APPEARANCE">
+
+    <ListPreference
+        android:key="themeList"
+        android:defaultValue="auto"
+        android:entries="@array/themeEntries"
+        android:entryValues="@array/themeEntryValues"
+        android:title="Theme"
+        android:icon="@drawable/ic_moon_black"
+        android:summary="%s"/>
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

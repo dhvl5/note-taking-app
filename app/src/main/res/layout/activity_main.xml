@@ -28,7 +28,7 @@
             android:id="@+id/themeModeImageButton"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:layout_gravity="end"
+            android:layout_gravity="start"
             android:translationX="-7dp"
             android:src="@drawable/ic_sun_black"
             android:background="@drawable/custom_button" />

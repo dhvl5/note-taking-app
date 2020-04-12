@@ -1,3 +1,17 @@
 <resources>
+    
     <string name="app_name">WASD</string>
+    
+    <string-array name="themeEntries">
+        <item>Dark</item>
+        <item>Light</item>
+        <item>System Default</item>
+    </string-array>
+
+    <string-array name="themeEntryValues">
+        <item>Dark</item>
+        <item>Light</item>
+        <item>Auto</item>
+    </string-array>
+
 </resources>
