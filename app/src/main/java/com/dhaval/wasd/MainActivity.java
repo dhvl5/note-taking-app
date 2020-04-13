@@ -184,7 +184,7 @@ public class MainActivity extends AppCompatActivity
                 HideAnimation(floatingActionButton, 500);
                 dimBackgroundView.setVisibility(View.VISIBLE);
                 ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(dimBackgroundView, "Alpha", .7f);
-                objectAnimator.setDuration(1000);
+                objectAnimator.setDuration(500);
                 objectAnimator.start();
                 objectAnimator.addListener(new AnimatorListenerAdapter() {
                     @Override
@@ -319,6 +319,11 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onClick(View v) {
                 bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+                inputMethodManager.hideSoftInputFromWindow(titleEditText.getWindowToken(), 0);
+                titleEditText.clearFocus();
+
+                inputMethodManager.hideSoftInputFromWindow(descEditText.getWindowToken(), 0);
+                descEditText.clearFocus();
             }
         });
         //endregion

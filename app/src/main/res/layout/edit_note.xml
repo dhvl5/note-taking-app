@@ -20,6 +20,24 @@
             android:src="@drawable/ic_arrow_back_black"
             android:background="@drawable/custom_button" />
 
+        <ImageButton
+            android:id="@+id/deleteImageButton"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_gravity="end"
+            android:translationX="-7dp"
+            android:src="@drawable/ic_delete_red"
+            android:background="@drawable/custom_button" />
+
+        <ImageButton
+            android:id="@+id/reminderImageButton"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_gravity="end"
+            android:translationX="-7dp"
+            android:src="@drawable/ic_reminder_black"
+            android:background="@drawable/custom_button" />
+
     </com.google.android.material.appbar.MaterialToolbar>
 
     <EditText

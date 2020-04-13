@@ -67,6 +67,7 @@
             android:layout_height="match_parent"
             android:textCursorDrawable="@null"
             android:textColor="?attr/textColor"
+            android:singleLine="true"
             android:background="@android:color/transparent" />
 
     </com.google.android.material.appbar.MaterialToolbar>

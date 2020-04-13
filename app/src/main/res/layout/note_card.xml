@@ -41,6 +41,8 @@
             android:text="Dhaval Prajapati"
             android:textColor="?attr/textColor"
             android:textSize="17sp"
+            android:maxLines="3"
+            android:ellipsize="end"
             android:transitionName="noteAnime" />
 
     </com.google.android.material.card.MaterialCardView>
