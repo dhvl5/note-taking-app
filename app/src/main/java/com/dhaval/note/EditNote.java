@@ -1,6 +1,5 @@
-package com.dhaval.wasd;
+package com.dhaval.note;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.transition.Fade;
 import android.view.View;

@@ -1,7 +1,5 @@
-package com.dhaval.wasd;
+package com.dhaval.note;
 
-import android.app.Activity;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 

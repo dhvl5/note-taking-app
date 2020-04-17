@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "718109395960",
+    "firebase_url": "https://ote-ffd03.firebaseio.com",
+    "project_id": "ote-ffd03",
+    "storage_bucket": "ote-ffd03.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:718109395960:android:02328db862650c1b04a40d",
+        "android_client_info": {
+          "package_name": "com.dhaval.note"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "718109395960-cu0vpsiavgvsh51ngvvbbromor9jas2i.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB-29YezXskZA5KX1iRuVNYi1sJEpYLFCE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "718109395960-cu0vpsiavgvsh51ngvvbbromor9jas2i.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

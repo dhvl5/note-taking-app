@@ -1,4 +1,4 @@
-package com.dhaval.wasd;
+package com.dhaval.note;
 
 import java.io.Serializable;
 

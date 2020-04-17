@@ -1,4 +1,4 @@
-package com.dhaval.wasd;
+package com.dhaval.note;
 
 import android.content.res.ColorStateList;
 import android.graphics.Color;
