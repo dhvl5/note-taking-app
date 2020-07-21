@@ -2,7 +2,6 @@ App is still under development :shrug:
 
 # LICENSE
 
-```
 MIT License
 
 Copyright (c) 2020 Dhaval Prajapati
