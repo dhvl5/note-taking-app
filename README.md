@@ -1,5 +1,3 @@
-App is still under development :shrug:
-
 # LICENSE
 
 ```
